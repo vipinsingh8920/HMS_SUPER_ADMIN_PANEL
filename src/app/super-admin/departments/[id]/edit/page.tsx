@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CheckCircle2, Save } from "lucide-react";
-import { useState } from "react";
+import { use, useState } from "react";
 import { platformDepartments } from "@/mock/super-admin/departments";
 import { SuperAdminShell } from "@/components/layout/SuperAdminShell";
 
-export default function EditDepartmentPage({ params }: { params: { id: string } }) {
-  const department = platformDepartments.find((item) => item.id === params.id);
+export default function EditDepartmentPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const department = platformDepartments.find((item) => item.id === id);
   if (!department) notFound();
   const [saved, setSaved] = useState(false);
 

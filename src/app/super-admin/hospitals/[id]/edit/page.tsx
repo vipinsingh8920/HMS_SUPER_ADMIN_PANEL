@@ -4,8 +4,9 @@ import { Save } from "lucide-react";
 import { initialHospitals } from "@/mock/super-admin/hospitals";
 import { SuperAdminShell } from "@/components/layout/SuperAdminShell";
 
-export default function EditHospitalPage({ params }: { params: { id: string } }) {
-  const hospital = initialHospitals.find((item) => item.id === params.id);
+export default async function EditHospitalPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const hospital = initialHospitals.find((item) => item.id === id);
   if (!hospital) notFound();
 
   return (

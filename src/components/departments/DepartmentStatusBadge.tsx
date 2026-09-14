@@ -2,6 +2,7 @@ import type { DepartmentStatus } from "@/types/super-admin";
 
 const departmentStatusClasses: Record<DepartmentStatus, string> = {
   ACTIVE: "bg-[#e7f6f0] text-[#23876d] ring-1 ring-[#bde8df]",
+  INACTIVE: "bg-[#fff1d8] text-[#b47629] ring-1 ring-[#f0d39f]",
   DISABLED: "bg-[#f3f7f6] text-[#71878d] ring-1 ring-[#dfeae8]",
 };
 

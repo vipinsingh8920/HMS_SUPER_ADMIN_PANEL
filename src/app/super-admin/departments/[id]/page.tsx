@@ -5,8 +5,9 @@ import { platformDepartments } from "@/mock/super-admin/departments";
 import { DepartmentStatusBadge } from "@/components/departments/DepartmentStatusBadge";
 import { SuperAdminShell } from "@/components/layout/SuperAdminShell";
 
-export default function DepartmentDetailsPage({ params }: { params: { id: string } }) {
-  const department = platformDepartments.find((item) => item.id === params.id);
+export default async function DepartmentDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const department = platformDepartments.find((item) => item.id === id);
   if (!department) notFound();
 
   return (

@@ -6,8 +6,9 @@ import { platformDepartments } from "@/mock/super-admin/departments";
 import { HospitalStatusBadge } from "@/components/hospitals/HospitalStatusBadge";
 import { SuperAdminShell } from "@/components/layout/SuperAdminShell";
 
-export default function HospitalDetailsPage({ params }: { params: { id: string } }) {
-  const hospital = initialHospitals.find((item) => item.id === params.id);
+export default async function HospitalDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const hospital = initialHospitals.find((item) => item.id === id);
   if (!hospital) notFound();
   const enabledDepartments = platformDepartments.filter((department) => hospital.enabledDepartmentIds.includes(department.id));
 

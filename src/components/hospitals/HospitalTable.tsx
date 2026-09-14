@@ -68,9 +68,13 @@ export function HospitalTable({ hospitals }: { hospitals: Hospital[] }) {
           <div className="relative">
             <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="appearance-none rounded-[7px] border border-[#dfeae8] bg-white px-3 py-2 pr-9 text-sm text-[#536b75] outline-none shadow-sm">
               <option value="ALL">All statuses</option>
+              <option value="DRAFT">DRAFT</option>
+              <option value="PENDING">PENDING</option>
+              <option value="READY">READY</option>
               <option value="ACTIVE">ACTIVE</option>
               <option value="INACTIVE">INACTIVE</option>
-              <option value="PENDING">PENDING</option>
+              <option value="SUSPENDED">SUSPENDED</option>
+              <option value="ARCHIVED">ARCHIVED</option>
             </select>
             <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#71878d]" />
           </div>

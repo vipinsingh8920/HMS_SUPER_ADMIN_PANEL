@@ -1,10 +1,13 @@
 import type { HospitalStatus } from "@/types/super-admin";
 
 const statusClasses: Record<HospitalStatus, string> = {
+  DRAFT: "bg-[#f3f7f6] text-[#536b75] ring-1 ring-[#dfeae8]",
+  PENDING: "bg-[#eaf3fb] text-[#3978a5] ring-1 ring-[#c6dce9]",
+  READY: "bg-[#dff4ef] text-[#176c73] ring-1 ring-[#bde8df]",
   ACTIVE: "bg-[#e7f6f0] text-[#23876d] ring-1 ring-[#bde8df]",
   INACTIVE: "bg-[#fff1d8] text-[#b47629] ring-1 ring-[#f0d39f]",
-  PENDING: "bg-[#eaf3fb] text-[#3978a5] ring-1 ring-[#c6dce9]",
   SUSPENDED: "bg-[#fce9e8] text-[#c96968] ring-1 ring-[#e8c2bd]",
+  ARCHIVED: "bg-[#f0f2f5] text-[#5a6670] ring-1 ring-[#dfe3e8]",
 };
 
 export function HospitalStatusBadge({ status }: { status: HospitalStatus }) {
