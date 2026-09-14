@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   ArrowRight,
   Bell,
@@ -15,15 +15,38 @@ import {
   X,
 } from "lucide-react";
 import { superAdminNavItems } from "@/lib/navigation";
+import { getSession, signOut } from "@/lib/auth";
 import { superAdmin } from "@/mock/super-admin/admin";
 import { superAdminNotifications } from "@/mock/super-admin/notifications";
 
 export function SuperAdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
   const unreadCount = superAdminNotifications.filter((item) => !item.read).length;
+
+  useEffect(() => {
+    const currentSession = getSession();
+    if (!currentSession) {
+      router.replace(`/login?next=${encodeURIComponent(pathname)}`);
+      return;
+    }
+    startTransition(() => setAuthChecked(true));
+  }, [pathname, router]);
+
+  if (!authChecked) {
+    return <div className="flex min-h-screen items-center justify-center bg-[#f3f7f6] text-sm font-semibold text-[#71878d]">Checking workspace access...</div>;
+  }
+
+  const handleSignOut = () => {
+    signOut();
+    router.replace("/login");
+  };
+
+  const currentUser = getSession() ?? superAdmin;
 
   return (
     <div className="super-admin-shell min-h-screen bg-[radial-gradient(circle_at_top,_#f7fbfa,_#edf5f3_38%,_#f1f4f5_100%)] text-[#18343d]">
@@ -84,12 +107,12 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
           <div className="border-t border-white/10 p-3">
             <div className="flex items-center gap-3 rounded-none border-t border-[#315463] px-2 py-4">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#c9eee4] text-xs font-black text-[#196366]">
-                {superAdmin.avatar}
+                {currentUser.name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase()}
               </div>
               {!collapsed && (
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-white">{superAdmin.name}</p>
-                  <p className="truncate text-[11px] text-[#88adb5]">Platform Administrator</p>
+                  <p className="truncate text-sm font-semibold text-white">{currentUser.name}</p>
+                  <p className="truncate text-[11px] text-[#88adb5]">{currentUser.role === "OWNER" ? "Platform Owner" : "Platform Administrator"}</p>
                 </div>
               )}
               {!collapsed && <ChevronDown className="h-4 w-4 text-slate-300" />}
@@ -182,11 +205,11 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
 
                 <div className="relative hidden items-center gap-3 md:flex">
                   <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#d7ebe8] text-xs font-black text-[#237273]">
-                    {superAdmin.avatar}
+                    {currentUser.name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase()}
                   </div>
                   <div className="min-w-0 text-left">
-                    <p className="truncate text-sm font-semibold text-[#18343d]">{superAdmin.name}</p>
-                    <p className="text-[11px] text-[#71878d]">{superAdmin.role}</p>
+                    <p className="truncate text-sm font-semibold text-[#18343d]">{currentUser.name}</p>
+                    <p className="text-[11px] text-[#71878d]">{currentUser.role === "OWNER" ? "Platform Owner" : superAdmin.role}</p>
                   </div>
                   <button type="button" aria-label="Open profile menu" aria-expanded={profileMenuOpen} onClick={() => setProfileMenuOpen((value) => !value)} className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[#f3f7f6] text-[#71878d] hover:bg-[#e6eff5]">
                     <ChevronDown className="h-4 w-4" />
@@ -194,8 +217,8 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
                   {profileMenuOpen && (
                     <div className="absolute right-0 top-12 z-50 w-56 rounded-[10px] border border-[#dfeae8] bg-white p-2 shadow-[0_18px_40px_rgba(15,23,42,0.12)]">
                       <div className="border-b border-[#eef3f2] px-3 py-2">
-                        <p className="text-sm font-semibold text-[#18343d]">{superAdmin.name}</p>
-                        <p className="mt-1 text-xs text-[#71878d]">{superAdmin.email}</p>
+                        <p className="text-sm font-semibold text-[#18343d]">{currentUser.name}</p>
+                        <p className="mt-1 text-xs text-[#71878d]">{currentUser.email}</p>
                       </div>
                       <Link href="/super-admin/profile" onClick={() => setProfileMenuOpen(false)} className="mt-1 flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[#536b75] hover:bg-[#f3f7f6]">
                         <UserCircle2 className="h-4 w-4" />
@@ -205,7 +228,7 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
                         <ShieldCheck className="h-4 w-4" />
                         Settings
                       </Link>
-                      <button type="button" onClick={() => setProfileMenuOpen(false)} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-[#c96968] hover:bg-[#fff4f2]">
+                      <button type="button" onClick={handleSignOut} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-[#c96968] hover:bg-[#fff4f2]">
                         Sign out
                       </button>
                     </div>
