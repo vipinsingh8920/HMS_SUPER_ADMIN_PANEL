@@ -15,11 +15,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Veya Platform Console",
-    template: "%s | Veya Platform Console",
+    default: "Appziora HMS Platform Console",
+    template: "%s | Appziora HMS Platform Console",
   },
   description: "Platform administration for connected hospital workspaces.",
-  applicationName: "Veya Platform Console",
+  applicationName: "Appziora HMS Platform Console",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

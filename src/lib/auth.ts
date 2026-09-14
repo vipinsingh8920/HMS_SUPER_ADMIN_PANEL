@@ -8,13 +8,13 @@ type StoredAccount = AuthUser & {
   password: string;
 };
 
-const accountStorageKey = "veya-owner-account";
-const sessionStorageKey = "veya-auth-session";
+const accountStorageKey = "appziora-hms-owner-account";
+const sessionStorageKey = "appziora-hms-auth-session";
 
 export const demoAccount: StoredAccount = {
   name: "Aarav Mehta",
-  email: "owner@veya.health",
-  password: "VeyaOwner2026!",
+  email: "owner@appziora.health",
+  password: "AppzioraOwner2026!",
   role: "OWNER",
 };
 

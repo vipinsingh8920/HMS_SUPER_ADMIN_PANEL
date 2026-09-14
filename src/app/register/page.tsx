@@ -36,7 +36,7 @@ export default function RegisterPage() {
         <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-[#dcefe9] text-[#176c73]"><UserRound className="h-5 w-5" /></div>
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#176c73]">First-time setup</p>
         <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#18343d]">Create owner access</h2>
-        <p className="mt-2 text-sm leading-6 text-[#71878d]">Set up the primary account that controls your Veya platform workspace.</p>
+        <p className="mt-2 text-sm leading-6 text-[#71878d]">Set up the primary account that controls your Appziora HMS workspace.</p>
       </div>
 
       {error && <div role="alert" className="mb-5 rounded-xl border border-[#e8c2bd] bg-[#fff4f2] px-4 py-3 text-sm font-medium text-[#a95050]">{error}</div>}

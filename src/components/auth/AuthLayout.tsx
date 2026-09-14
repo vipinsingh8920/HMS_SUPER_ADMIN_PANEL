@@ -13,9 +13,9 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
         <div className="absolute inset-0 bg-[#25a7a0]/10 mix-blend-screen" />
         <div className="relative">
           <Link href="/login" className="inline-flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-[9px] bg-[#25a7a0] text-sm font-black">V</span>
+            <span className="flex h-10 w-10 items-center justify-center rounded-[9px] bg-[#25a7a0] text-sm font-black">A</span>
             <span>
-              <span className="block text-sm font-semibold">Veya</span>
+              <span className="block text-sm font-semibold">Appziora HMS</span>
               <span className="block text-[10px] font-bold tracking-[0.14em] text-[#80a8b1]">HOSPITAL OS</span>
             </span>
           </Link>
@@ -29,14 +29,14 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
             <div><p className="text-sm font-semibold">One platform. Every connection.</p><p className="mt-1 text-xs text-[#a9c9c9]">Hospitals, departments, access, and insight.</p></div>
           </div>
         </div>
-        <div className="relative flex items-center justify-between gap-4 text-xs text-[#a6c4c5]"><span>Veya Platform Console</span><span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-[#80e1d1]" /> Secure workspace access</span></div>
+        <div className="relative flex items-center justify-between gap-4 text-xs text-[#a6c4c5]"><span>Appziora HMS Platform Console</span><span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-[#80e1d1]" /> Secure workspace access</span></div>
       </section>
 
       <section className="flex min-h-screen flex-col justify-center px-5 py-6 sm:px-8 lg:px-12 xl:px-20">
         <div className="mx-auto w-full max-w-[430px]">
           <div className="mb-6 flex items-center gap-3 lg:hidden">
-            <span className="flex h-10 w-10 items-center justify-center rounded-[9px] bg-[#25a7a0] text-sm font-black text-white">V</span>
-            <span><span className="block text-sm font-semibold">Veya</span><span className="block text-[10px] font-bold tracking-[0.14em] text-[#71878d]">HOSPITAL OS</span></span>
+            <span className="flex h-10 w-10 items-center justify-center rounded-[9px] bg-[#25a7a0] text-sm font-black text-white">A</span>
+            <span><span className="block text-sm font-semibold">Appziora HMS</span><span className="block text-[10px] font-bold tracking-[0.14em] text-[#71878d]">HOSPITAL OS</span></span>
           </div>
           <div className="mb-7 h-28 overflow-hidden rounded-2xl bg-[#123f47] bg-cover bg-[center_28%] shadow-[0_14px_30px_rgba(18,63,71,0.14)] lg:hidden" style={{ backgroundImage: "linear-gradient(90deg,rgba(18,63,71,0.7),rgba(18,63,71,0.08)),url('https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=1000&q=80')" }}>
             <div className="flex h-full items-end p-4 text-white"><p className="text-sm font-semibold">Your care network, in focus.</p></div>

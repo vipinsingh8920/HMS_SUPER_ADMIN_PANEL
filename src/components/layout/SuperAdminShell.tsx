@@ -64,7 +64,7 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
               </div>
               {!collapsed && (
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-white">Veya</p>
+                  <p className="truncate text-sm font-semibold text-white">Appziora HMS</p>
                   <p className="truncate text-[10px] font-bold tracking-[0.14em] text-[#80a8b1]">HOSPITAL OS</p>
                 </div>
               )}
@@ -132,9 +132,9 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
         >
           <div className="flex items-center justify-between border-b border-white/10 px-4 py-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-[9px] bg-[#25a7a0] text-sm font-black text-white">V</div>
+              <div className="flex h-9 w-9 items-center justify-center rounded-[9px] bg-[#25a7a0] text-sm font-black text-white">A</div>
               <div>
-                <p className="text-sm font-semibold text-white">Veya</p>
+                <p className="text-sm font-semibold text-white">Appziora HMS</p>
                 <p className="text-[10px] font-bold tracking-[0.14em] text-[#80a8b1]">HOSPITAL OS</p>
               </div>
             </div>

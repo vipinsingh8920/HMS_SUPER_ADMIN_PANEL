@@ -1,8 +1,8 @@
 import type { PlatformSetting } from "@/types/super-admin";
 
 export const platformSettings: PlatformSetting[] = [
-  { key: "platform_name", label: "Platform Name", value: "Veya Hospital OS", section: "Platform Settings" },
-  { key: "support_email", label: "Support Email", value: "support@veyahealth.com", section: "Platform Settings" },
+  { key: "platform_name", label: "Platform Name", value: "Appziora HMS", section: "Platform Settings" },
+  { key: "support_email", label: "Support Email", value: "support@appziora.health", section: "Platform Settings" },
   { key: "default_timezone", label: "Default Timezone", value: "UTC+05:30", section: "Platform Settings" },
   { key: "default_currency", label: "Default Currency", value: "INR", section: "Platform Settings" },
   { key: "maintenance_mode", label: "Maintenance Mode", value: false, section: "Platform Settings" },

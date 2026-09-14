@@ -16,7 +16,7 @@ export default function DepartmentsPage() {
           <div>
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#176c73]"><span className="h-2 w-2 rounded-full bg-[#20a477] shadow-[0_0_0_4px_#d9f4e8]" /> Platform catalog</div>
             <h1 className="mt-3 text-3xl font-bold tracking-tight text-[#18343d]">Departments</h1>
-            <p className="mt-2 max-w-xl text-sm text-[#71878d]">Shape the shared clinical catalog that hospitals can enable across the Veya platform.</p>
+            <p className="mt-2 max-w-xl text-sm text-[#71878d]">Shape the shared clinical catalog that hospitals can enable across the Appziora HMS platform.</p>
           </div>
           <Link href="/super-admin/departments/new" className="inline-flex items-center gap-2 rounded-[7px] bg-[#176c73] px-3.5 py-2.5 text-sm font-bold text-white shadow-[0_4px_10px_rgba(14,143,145,0.15)] hover:bg-[#123f47]">
             <Plus className="h-4 w-4" />
