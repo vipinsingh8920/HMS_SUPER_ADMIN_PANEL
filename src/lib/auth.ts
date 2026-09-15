@@ -48,14 +48,6 @@ export function authenticate(email: string, password: string): AuthUser | null {
   return user;
 }
 
-export function registerOwner(name: string, email: string, password: string): AuthUser {
-  const account: StoredAccount = { name: name.trim(), email: email.trim(), password, role: "OWNER" };
-  const user = { name: account.name, email: account.email, role: account.role };
-  window.localStorage.setItem(accountStorageKey, JSON.stringify(account));
-  window.localStorage.setItem(sessionStorageKey, JSON.stringify(user));
-  return user;
-}
-
 export function getSession(): AuthUser | null {
   if (typeof window === "undefined") return null;
   const session = window.localStorage.getItem(sessionStorageKey);
@@ -78,7 +70,7 @@ export function getAuthRedirectPath(defaultPath = "/super-admin") {
 
   const requestedPath = new URLSearchParams(window.location.search).get("next");
   if (!requestedPath || !requestedPath.startsWith("/") || requestedPath.startsWith("//")) return defaultPath;
-  if (requestedPath === "/login" || requestedPath.startsWith("/login?") || requestedPath === "/register" || requestedPath.startsWith("/register?")) return defaultPath;
+  if (requestedPath === "/login" || requestedPath.startsWith("/login?")) return defaultPath;
 
   return requestedPath;
 }

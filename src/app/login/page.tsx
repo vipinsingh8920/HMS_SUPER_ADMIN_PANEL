@@ -2,7 +2,6 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, ShieldCheck } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { authenticate, demoAccount, getAuthRedirectPath, getSession } from "@/lib/auth";
@@ -55,7 +54,6 @@ export default function LoginPage() {
       </form>
 
       <div className="mt-6 flex items-start gap-3 rounded-xl border border-[#dfeae8] bg-white/70 p-3.5 text-xs text-[#71878d]"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#20a477]" /><p><span className="font-semibold text-[#536b75]">Demo credentials loaded.</span> This preview uses a temporary owner account until real authentication is connected.</p></div>
-      <p className="mt-7 text-center text-sm text-[#71878d]">Setting up the platform? <Link href="/register" className="font-bold text-[#176c73] hover:text-[#123f47]">Create the owner account</Link></p>
     </AuthLayout>
   );
 }

@@ -88,8 +88,8 @@ export default function PlansPage() {
             <div className="inline-flex items-center gap-2 rounded-full bg-[#eaf5f2] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-[#176c73]"><Sparkles className="h-3.5 w-3.5" /> {initialHospitals.length} hospitals</div>
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-[#dfeae8]">
-            <table className="min-w-full divide-y divide-[#e7eef0] text-left text-sm">
+          <div className="overflow-x-auto rounded-xl border border-[#dfeae8]">
+            <table className="min-w-[680px] divide-y divide-[#e7eef0] text-left text-sm">
               <thead className="bg-[#f7faf9] text-[#8ca0a6]">
                 <tr>
                   <th className="px-4 py-3 font-semibold uppercase tracking-[0.08em]">Hospital</th>

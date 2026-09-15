@@ -50,7 +50,7 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="super-admin-shell min-h-screen bg-[radial-gradient(circle_at_top,_#f7fbfa,_#edf5f3_38%,_#f1f4f5_100%)] text-[#18343d]">
-      <div className="flex min-h-screen">
+      <div className="flex min-h-screen min-w-0">
         <aside
           className={[
             "hidden border-r border-[#315463] bg-[#123f47] text-slate-100 shadow-[0_18px_40px_rgba(15,23,42,0.12)] transition-all duration-300 lg:flex lg:flex-col",
@@ -164,7 +164,7 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
           </nav>
         </aside>
 
-        <div className="flex min-h-screen flex-1 flex-col">
+        <div className="flex min-h-screen min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-30 border-b border-[#dfeae8] bg-white/90 backdrop-blur-xl">
             <div className="flex h-16 items-center justify-between gap-4 px-4 sm:px-6">
               <div className="flex items-center gap-2">
@@ -243,7 +243,7 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
             </div>
           </header>
 
-          <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
+          <main className="min-w-0 flex-1 overflow-x-hidden p-3 sm:p-6 lg:p-8">{children}</main>
         </div>
       </div>
     </div>
