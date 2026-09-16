@@ -1,3 +1,5 @@
+import { getCurrentUser } from "@/lib/auth-storage";
+
 export type AuthUser = {
   name: string;
   email: string;
@@ -13,8 +15,8 @@ const sessionStorageKey = "appziora-hms-auth-session";
 
 export const demoAccount: StoredAccount = {
   name: "Aarav Mehta",
-  email: "owner@appziora.health",
-  password: "AppzioraOwner2026!",
+  email: "admin@example.com",
+  password: "StrongPassword123!",
   role: "OWNER",
 };
 
@@ -51,7 +53,7 @@ export function authenticate(email: string, password: string): AuthUser | null {
 export function getSession(): AuthUser | null {
   if (typeof window === "undefined") return null;
   const session = window.localStorage.getItem(sessionStorageKey);
-  if (!session) return null;
+  if (!session) return getCurrentUser();
 
   try {
     return JSON.parse(session) as AuthUser;

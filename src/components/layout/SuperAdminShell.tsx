@@ -15,9 +15,10 @@ import {
   X,
 } from "lucide-react";
 import { superAdminNavItems } from "@/lib/navigation";
-import { getSession, signOut } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { superAdmin } from "@/mock/super-admin/admin";
 import { superAdminNotifications } from "@/mock/super-admin/notifications";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 export function SuperAdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -27,6 +28,7 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
   const unreadCount = superAdminNotifications.filter((item) => !item.read).length;
+  const { logout,isLoggingOut } = useAuth();
 
   useEffect(() => {
     const currentSession = getSession();
@@ -42,8 +44,7 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
   }
 
   const handleSignOut = () => {
-    signOut();
-    router.replace("/login");
+    logout();
   };
 
   const currentUser = getSession() ?? superAdmin;
@@ -228,8 +229,8 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
                         <ShieldCheck className="h-4 w-4" />
                         Settings
                       </Link>
-                      <button type="button" onClick={handleSignOut} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-[#c96968] hover:bg-[#fff4f2]">
-                        Sign out
+                      <button type="button" onClick={handleSignOut} disabled={isLoggingOut} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-[#c96968] hover:bg-[#fff4f2] disabled:cursor-not-allowed disabled:opacity-60">
+                        {isLoggingOut ? "Signing out..." : "Sign out"}
                       </button>
                     </div>
                   )}
