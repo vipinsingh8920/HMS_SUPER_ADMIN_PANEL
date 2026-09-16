@@ -32,6 +32,7 @@ export default function LoginPage() {
       console.log(res);
       router.replace(getAuthRedirectPath());
     } catch (err) {
+      console.log('error',err)
       setError(
         err instanceof ApiError
           ? err.message

@@ -4,7 +4,13 @@ import { clearAuthSession } from "@/lib/auth-storage";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://hms-node-backend-9mw2.onrender.com";
 
-type ApiErrorResponse = { success?: boolean; message?: string; error?: string; code?: string };
+type ApiErrorResponse = {
+  success?: boolean;
+  message?: string;
+  error?: string;
+  detail?: string;
+  code?: string;
+};
 
 export class ApiError extends Error {
   status: number;
@@ -50,7 +56,11 @@ export async function apiClient<T>(endpoint: string, config: AxiosRequestConfig 
     if (axios.isAxiosError(error)) {
       const data = error.response?.data as ApiErrorResponse | undefined;
       throw new ApiError(
-        data?.message ?? data?.error ?? error.message ?? "Something went wrong",
+        data?.message ??
+        data?.detail ??
+        data?.error ??
+        error.message ??
+        "Something went wrong",
         error.response?.status ?? 500,
         data?.code,
       );
