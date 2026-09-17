@@ -4,7 +4,12 @@ export const queryKeys = {
   },
   dashboard: {
     all: ["dashboard"] as const,
-    overview: ["dashboard", "overview"] as const,
+
+    summary: (params: {
+      months?: number;
+      limit?: number;
+    } = {}) =>
+      ["dashboard", "summary", params] as const,
   },
   patients: {
     all: ["patients"] as const,

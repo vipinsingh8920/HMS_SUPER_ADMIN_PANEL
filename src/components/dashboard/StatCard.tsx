@@ -11,7 +11,7 @@ export function StatCard({
   href,
 }: {
   title: string;
-  value: string;
+  value: string | number;
   change: string;
   description: string;
   icon: ReactNode;

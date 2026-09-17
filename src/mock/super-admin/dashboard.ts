@@ -39,53 +39,7 @@ export const recentHospitals = initialHospitals.slice(0, 5).map((hospital) => ({
   enabledCount: hospital.enabledDepartmentIds.length,
 }));
 
-export const recentPlatformActivity: PlatformActivity[] = [
-  {
-    id: "ACT-201",
-    dateTime: "2026-09-14 09:15",
-    action: "New hospital registered",
-    entity: "Hospital",
-    entityId: "HOS-004",
-    performedBy: "Aarav Mehta",
-    status: "SUCCESS",
-  },
-  {
-    id: "ACT-202",
-    dateTime: "2026-09-13 17:42",
-    action: "Hospital activated",
-    entity: "Hospital",
-    entityId: "HOS-005",
-    performedBy: "Aarav Mehta",
-    status: "SUCCESS",
-  },
-  {
-    id: "ACT-203",
-    dateTime: "2026-09-12 13:18",
-    action: "Department enabled for hospital",
-    entity: "Hospital Department",
-    entityId: "HOS-002 / dept-10",
-    performedBy: "Aarav Mehta",
-    status: "INFO",
-  },
-  {
-    id: "ACT-204",
-    dateTime: "2026-09-10 10:05",
-    action: "Hospital deactivated",
-    entity: "Hospital",
-    entityId: "HOS-003",
-    performedBy: "Aarav Mehta",
-    status: "WARNING",
-  },
-  {
-    id: "ACT-205",
-    dateTime: "2026-09-08 16:44",
-    action: "Hospital profile updated",
-    entity: "Hospital",
-    entityId: "HOS-006",
-    performedBy: "Aarav Mehta",
-    status: "INFO",
-  },
-];
+
 
 export const hospitalDepartmentSummary = Object.entries(hospitalDepartmentMatrix).map(
   ([hospitalId, departments]) => ({

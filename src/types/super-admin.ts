@@ -5,10 +5,15 @@ export type HospitalStatus =
   | "ACTIVE"
   | "INACTIVE"
   | "SUSPENDED"
-  | "ARCHIVED";
+  | "ARCHIVED"
+  | "APPROVED"
+  | "REJECTED";
 
 export type DepartmentStatus = "ACTIVE" | "INACTIVE" | "DISABLED";
-
+export type HospitalApprovalStatus =
+  | "PENDING"
+  | "APPROVED"
+  | "REJECTED";
 export type HospitalAdminStatus = "INVITED" | "ACTIVE" | "INACTIVE" | "EXPIRED";
 export type ModuleStatus = "ACTIVE" | "DISABLED";
 export type SubscriptionStatus = "TRIAL" | "ACTIVE" | "PAST_DUE" | "SUSPENDED" | "EXPIRED";
@@ -128,15 +133,13 @@ export type NotificationItem = {
   read: boolean;
   actionUrl?: string;
 };
-
 export type PlatformActivity = {
-  id: string;
-  dateTime: string;
-  action: string;
-  entity: string;
-  entityId: string;
-  performedBy: string;
-  status: "SUCCESS" | "INFO" | "WARNING" | "ERROR";
+  activity: string;
+  entity_type: string;
+  entity_id: number;
+  hospital_id: number;
+  hospital_name: string;
+  occurred_at: string;
 };
 
 export type PlatformStat = {

@@ -8,6 +8,8 @@ const statusClasses: Record<HospitalStatus, string> = {
   INACTIVE: "bg-[#fff1d8] text-[#b47629] ring-1 ring-[#f0d39f]",
   SUSPENDED: "bg-[#fce9e8] text-[#c96968] ring-1 ring-[#e8c2bd]",
   ARCHIVED: "bg-[#f0f2f5] text-[#5a6670] ring-1 ring-[#dfe3e8]",
+ APPROVED: "bg-[#e7f6f0] text-[#23876d] ring-1 ring-[#bde8df]",
+  REJECTED: "bg-[#fce9e8] text-[#c96968] ring-1 ring-[#e8c2bd]",
 };
 
 export function HospitalStatusBadge({ status }: { status: HospitalStatus }) {
