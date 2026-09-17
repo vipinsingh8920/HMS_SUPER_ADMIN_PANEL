@@ -23,3 +23,12 @@ export type LoginResponse = {
     admin: SuperAdmin;
   };
 };
+
+
+export interface ForgotPasswordResponse {
+  success: boolean;
+  message: string;
+  data: {
+    reset_link: string;
+  };
+}

@@ -28,6 +28,10 @@ export function useAuth() {
     },
   });
 
+  const forgotPasswordMutation = useMutation({
+    mutationFn: authService.forgotPassword,
+  });
+
   const logoutMutation = useMutation({
     mutationFn: authService.logout,
     onSettled: () => {
@@ -47,6 +51,11 @@ export function useAuth() {
     login: loginMutation.mutateAsync,
     isLoggingIn: loginMutation.isPending,
     loginError: loginMutation.error,
+
+    // forgot password
+    forgotPassword: forgotPasswordMutation.mutateAsync,
+    isForgotPasswordLoading: forgotPasswordMutation.isPending,
+    forgotPasswordError: forgotPasswordMutation.error,
 
     // logout
     logout: logoutMutation.mutate,

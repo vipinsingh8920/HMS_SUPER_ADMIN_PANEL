@@ -2,6 +2,10 @@ export const queryKeys = {
   auth: {
     session: ["auth", "session"] as const,
   },
+  dashboard: {
+    all: ["dashboard"] as const,
+    overview: ["dashboard", "overview"] as const,
+  },
   patients: {
     all: ["patients"] as const,
     list: (filters: Record<string, unknown> = {}) => ["patients", "list", filters] as const,
