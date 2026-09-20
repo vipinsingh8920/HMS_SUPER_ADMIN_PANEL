@@ -3,8 +3,11 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Building2, CheckCircle2, ChevronLeft, ChevronRight, MapPin, ShieldCheck } from "lucide-react";
-import { platformDepartments } from "@/mock/super-admin/departments";
 import { SuperAdminShell } from "@/components/layout/SuperAdminShell";
+import { useRouter } from "next/navigation";
+import { useHospitals } from "@/hooks/main/useHospitals";
+import { CreateHospitalPayload } from "@/types/hospital";
+import { useDepartments } from "@/hooks/main/useDepartments";
 
 const steps = [
   "Hospital Information",
@@ -18,37 +21,60 @@ const steps = [
 export default function NewHospitalPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
-  const [selectedDepartments, setSelectedDepartments] = useState<string[]>(["dept-01", "dept-02", "dept-13"]);
+  const [selectedDepartments, setSelectedDepartments] = useState<number[]>([]);
   const [selectedModules, setSelectedModules] = useState<string[]>(["mod-01", "mod-02", "mod-03", "mod-05", "mod-06", "mod-08"]);
+  const [formError, setFormError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    hospitalName: "Apollo Care Hospital",
-    code: "HMS-001",
+    hospitalName: "",
+    code: "",
     type: "Multi-Speciality",
-    registrationNumber: "REG-AP-2025-110",
-    email: "admin@apollocare.in",
-    phone: "+91 98765 43210",
-    website: "https://apollocare.in",
-    country: "India",
-    state: "Delhi",
-    city: "Delhi",
-    address: "Rohini Sector 18, Delhi",
-    postalCode: "110001",
-    contactName: "Dr. Rhea Sharma",
-    designation: "Operations Director",
-    contactEmail: "rhea.sharma@apollocare.in",
-    contactPhone: "+91 98765 43211",
-    adminName: "Nisha Kapoor",
-    adminEmail: "nisha.kapoor@apollocare.in",
-    adminPhone: "+91 98989 66554",
-  });
+    registrationNumber: "",
+    licenseNumber: "",
+    email: "",
+    phone: "",
+    website: "",
 
+    password: "",
+    confirmPassword: "",
+
+    country: "India",
+    state: "",
+    city: "",
+    address: "",
+    postalCode: "",
+
+    contactName: "",
+    designation: "",
+    contactEmail: "",
+    contactPhone: "",
+
+    adminName: "",
+    adminEmail: "",
+    adminPhone: "",
+  });
+  const router = useRouter();
+  const {
+    departments,
+    isLoading: departmentsLoading,
+    error: departmentsError,
+  } = useDepartments();
+  const {
+    createHospital,
+    createHospitalLoading,
+    createHospitalError,
+    createHospitalSuccess,
+    resetCreateHospital,
+  } = useHospitals();
+  console.log('departments data:', departments)
   const canGoNext = currentStep < steps.length - 1;
 
   const progress = useMemo(() => ((currentStep + 1) / steps.length) * 100, [currentStep]);
 
-  const toggleDepartment = (id: string) => {
+  const toggleDepartment = (id: number) => {
     setSelectedDepartments((current) =>
-      current.includes(id) ? current.filter((departmentId) => departmentId !== id) : [...current, id]
+      current.includes(id)
+        ? current.filter((departmentId) => departmentId !== id)
+        : [...current, id],
     );
   };
 
@@ -62,12 +88,103 @@ export default function NewHospitalPage() {
     setFormData((current) => ({ ...current, [key]: value }));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
-    setSubmitted(true);
+
+    setFormError(null);
+
+    if (formData.password.length < 8) {
+      setFormError("Password must be at least 8 characters.");
+      setCurrentStep(4);
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setFormError("Password and confirm password do not match.");
+      setCurrentStep(4);
+      return;
+    }
+
+    const payload: CreateHospitalPayload = {
+      name: formData.hospitalName.trim(),
+      code: formData.code.trim(),
+      hospital_type: formData.type,
+      registration_no: formData.registrationNumber.trim(),
+      license_number: formData.licenseNumber.trim(),
+
+      email: formData.email.trim(),
+      phone: formData.phone.trim(),
+      website_url: formData.website.trim(),
+      password: formData.password,
+
+      address: formData.address.trim(),
+      country: formData.country.trim(),
+      city: formData.city.trim(),
+      state: formData.state.trim(),
+      postal_code: formData.postalCode.trim(),
+
+      contact_person_name: formData.contactName.trim(),
+      contact_person_designation: formData.designation.trim(),
+      contact_person_phone: formData.contactPhone.trim(),
+      contact_person_email: formData.contactEmail.trim(),
+
+      department_ids: selectedDepartments,
+      hms_modules: selectedModules,
+
+      admin_name: formData.adminName.trim(),
+      admin_email: formData.adminEmail.trim(),
+      admin_phone: formData.adminPhone.trim(),
+    };
+
+    try {
+      let res = await createHospital(payload);
+      console.log('created response:', res)
+      setSubmitted(true);
+    } catch {
+      // createHospitalError is exposed by the hook
+    }
   };
 
-  const nextStep = () => setCurrentStep((step) => Math.min(step + 1, steps.length - 1));
+  const nextStep = () => {
+    setFormError(null);
+
+    if (currentStep === 0) {
+      if (
+        !formData.hospitalName.trim() ||
+        !formData.code.trim() ||
+        !formData.registrationNumber.trim() ||
+        !formData.licenseNumber.trim() ||
+        !formData.email.trim() ||
+        !formData.phone.trim()
+      ) {
+        setFormError("Please complete all required hospital information.");
+        return;
+      }
+    }
+
+    if (currentStep === 4) {
+      if (!formData.adminName.trim() || !formData.adminEmail.trim()) {
+        setFormError("Please complete the hospital admin information.");
+        return;
+      }
+
+      if (formData.password.length < 8) {
+        setFormError("Password must be at least 8 characters.");
+        return;
+      }
+
+      if (formData.password !== formData.confirmPassword) {
+        setFormError("Password and confirm password do not match.");
+        return;
+      }
+    }
+
+    setCurrentStep((step) =>
+      Math.min(step + 1, steps.length - 1),
+    );
+  };
   const previousStep = () => setCurrentStep((step) => Math.max(step - 1, 0));
 
   const currentStepContent = () => {
@@ -95,6 +212,17 @@ export default function NewHospitalPage() {
             <label className="space-y-2 text-sm font-medium text-slate-700">
               Registration Number
               <input value={formData.registrationNumber} onChange={(event) => handleFieldChange("registrationNumber", event.target.value)} required className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none focus:border-emerald-400 focus:bg-white" />
+            </label>
+            <label className="space-y-2 text-sm font-medium text-slate-700">
+              License Number
+              <input
+                value={formData.licenseNumber}
+                onChange={(event) =>
+                  handleFieldChange("licenseNumber", event.target.value)
+                }
+                required
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none focus:border-emerald-400 focus:bg-white"
+              />
             </label>
             <label className="space-y-2 text-sm font-medium text-slate-700">
               Email
@@ -158,7 +286,7 @@ export default function NewHospitalPage() {
         return (
           <div>
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-              {platformDepartments.map((department) => (
+              {departments.map((department) => (
                 <label key={department.id} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
                   <input type="checkbox" checked={selectedDepartments.includes(department.id)} onChange={() => toggleDepartment(department.id)} className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
                   <span>{department.name}</span>
@@ -201,15 +329,78 @@ export default function NewHospitalPage() {
           <div className="grid gap-5 md:grid-cols-2">
             <label className="space-y-2 text-sm font-medium text-slate-700">
               Hospital Admin Name
-              <input value={formData.adminName} onChange={(event) => handleFieldChange("adminName", event.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none focus:border-emerald-400 focus:bg-white" />
+              <input
+                value={formData.adminName}
+                onChange={(event) =>
+                  handleFieldChange("adminName", event.target.value)
+                }
+                required
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none focus:border-emerald-400 focus:bg-white"
+              />
             </label>
+
             <label className="space-y-2 text-sm font-medium text-slate-700">
               Admin Email
-              <input type="email" value={formData.adminEmail} onChange={(event) => handleFieldChange("adminEmail", event.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none focus:border-emerald-400 focus:bg-white" />
+              <input
+                type="email"
+                value={formData.adminEmail}
+                onChange={(event) =>
+                  handleFieldChange("adminEmail", event.target.value)
+                }
+                required
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none focus:border-emerald-400 focus:bg-white"
+              />
             </label>
-            <label className="space-y-2 text-sm font-medium text-slate-700 md:col-span-2">
+
+            <label className="space-y-2 text-sm font-medium text-slate-700">
               Admin Phone
-              <input value={formData.adminPhone} onChange={(event) => handleFieldChange("adminPhone", event.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none focus:border-emerald-400 focus:bg-white" />
+              <input
+                value={formData.adminPhone}
+                onChange={(event) =>
+                  handleFieldChange("adminPhone", event.target.value)
+                }
+                required
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none focus:border-emerald-400 focus:bg-white"
+              />
+            </label>
+
+            <label className="space-y-2 text-sm font-medium text-slate-700">
+              Password
+              <input
+                type="password"
+                value={formData.password}
+                onChange={(event) =>
+                  handleFieldChange("password", event.target.value)
+                }
+                required
+                minLength={8}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none focus:border-emerald-400 focus:bg-white"
+              />
+            </label>
+
+            <label className="space-y-2 text-sm font-medium text-slate-700">
+              Confirm Password
+              <input
+                type="password"
+                value={formData.confirmPassword}
+                onChange={(event) =>
+                  handleFieldChange("confirmPassword", event.target.value)
+                }
+                required
+                minLength={8}
+                className={`w-full rounded-xl border bg-slate-50 px-3 py-2.5 text-slate-900 outline-none focus:bg-white ${formData.confirmPassword &&
+                  formData.password !== formData.confirmPassword
+                  ? "border-red-300 focus:border-red-400"
+                  : "border-slate-200 focus:border-emerald-400"
+                  }`}
+              />
+
+              {formData.confirmPassword &&
+                formData.password !== formData.confirmPassword && (
+                  <p className="text-xs font-medium text-red-600">
+                    Passwords do not match.
+                  </p>
+                )}
             </label>
           </div>
         );
@@ -246,12 +437,38 @@ export default function NewHospitalPage() {
             <div className="flex items-center gap-3">
               <CheckCircle2 className="h-6 w-6" />
               <div>
-                <h2 className="text-lg font-semibold">Hospital registered successfully</h2>
-                <p className="text-sm text-emerald-800">The hospital profile has been created and is currently in review for activation.</p>
+                <h2 className="text-lg font-semibold">
+                  Hospital registered successfully
+                </h2>
+                <p className="text-sm text-emerald-800">
+                  The hospital profile has been created and is currently in review
+                  for activation.
+                </p>
               </div>
             </div>
           </div>
         ) : null}
+
+        {formError && (
+          <div
+            role="alert"
+            className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+          >
+            {formError}
+          </div>
+        )}
+
+        {createHospitalError && (
+          <div
+            role="alert"
+            className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+          >
+            {createHospitalError instanceof Error
+              ? createHospitalError.message
+              : "Unable to register hospital. Please try again."}
+          </div>
+        )}
+
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -301,8 +518,22 @@ export default function NewHospitalPage() {
                   Next <ChevronRight className="h-4 w-4" />
                 </button>
               ) : (
-                <button type="submit" className="inline-flex items-center gap-2 rounded-[7px] bg-[#176c73] px-4 py-2.5 text-sm font-bold text-white shadow-[0_4px_10px_rgba(14,143,145,0.15)] hover:bg-[#123f47]">
-                  <CheckCircle2 className="h-4 w-4" /> Activate hospital
+                <button
+                  type="submit"
+                  disabled={createHospitalLoading}
+                  className="inline-flex items-center gap-2 rounded-[7px] bg-[#176c73] px-4 py-2.5 text-sm font-bold text-white shadow-[0_4px_10px_rgba(14,143,145,0.15)] hover:bg-[#123f47] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {createHospitalLoading ? (
+                    <>
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      Registering...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="h-4 w-4" />
+                      Activate hospital
+                    </>
+                  )}
                 </button>
               )}
             </div>

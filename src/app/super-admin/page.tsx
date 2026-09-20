@@ -51,8 +51,10 @@ export default function SuperAdminDashboardPage() {
     refetch,
   } = useDashboard();
 
+  console.log('heyyyy',data)
+
   if (isLoading) {
-    return <AppzioraLoader />;
+    return <AppzioraLoader fullScreen={false} />;
   }
 
   if (error) {

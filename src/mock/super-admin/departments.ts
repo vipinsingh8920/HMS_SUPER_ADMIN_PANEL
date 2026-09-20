@@ -2,7 +2,7 @@ import type { Department } from "@/types/super-admin";
 
 export const platformDepartments: Department[] = [
   {
-    id: "dept-01",
+    id: 1,
     name: "General Medicine",
     code: "GEN-MED",
     category: "Primary Care",
@@ -12,7 +12,7 @@ export const platformDepartments: Department[] = [
     hospitalsUsing: 118,
   },
   {
-    id: "dept-02",
+    id: 2,
     name: "Cardiology",
     code: "CARD",
     category: "Specialty",
@@ -22,7 +22,7 @@ export const platformDepartments: Department[] = [
     hospitalsUsing: 96,
   },
   {
-    id: "dept-03",
+    id: 3,
     name: "Dentistry",
     code: "DENT",
     category: "Specialty",
@@ -32,7 +32,7 @@ export const platformDepartments: Department[] = [
     hospitalsUsing: 74,
   },
   {
-    id: "dept-04",
+    id: 4,
     name: "Orthopedics",
     code: "ORTHO",
     category: "Specialty",
@@ -42,7 +42,7 @@ export const platformDepartments: Department[] = [
     hospitalsUsing: 82,
   },
   {
-    id: "dept-05",
+    id: 5,
     name: "Pediatrics",
     code: "PED",
     category: "Specialty",
@@ -52,7 +52,7 @@ export const platformDepartments: Department[] = [
     hospitalsUsing: 87,
   },
   {
-    id: "dept-06",
+    id: 6,
     name: "Gynecology",
     code: "GYN",
     category: "Women Health",
@@ -62,7 +62,7 @@ export const platformDepartments: Department[] = [
     hospitalsUsing: 69,
   },
   {
-    id: "dept-07",
+    id: 7,
     name: "Dermatology",
     code: "DERM",
     category: "Specialty",
@@ -72,7 +72,7 @@ export const platformDepartments: Department[] = [
     hospitalsUsing: 58,
   },
   {
-    id: "dept-08",
+    id: 8,
     name: "Neurology",
     code: "NEURO",
     category: "Specialty",
@@ -82,7 +82,7 @@ export const platformDepartments: Department[] = [
     hospitalsUsing: 51,
   },
   {
-    id: "dept-09",
+    id: 9,
     name: "ENT",
     code: "ENT",
     category: "Specialty",
@@ -92,7 +92,7 @@ export const platformDepartments: Department[] = [
     hospitalsUsing: 61,
   },
   {
-    id: "dept-10",
+    id: 10,
     name: "Ophthalmology",
     code: "EYE",
     category: "Specialty",
@@ -100,65 +100,5 @@ export const platformDepartments: Department[] = [
     status: "ACTIVE",
     createdAt: "2025-06-15",
     hospitalsUsing: 64,
-  },
-  {
-    id: "dept-11",
-    name: "Psychiatry",
-    code: "PSY",
-    category: "Mental Health",
-    description: "Behavioral health and psychiatric consultations.",
-    status: "ACTIVE",
-    createdAt: "2025-07-02",
-    hospitalsUsing: 42,
-  },
-  {
-    id: "dept-12",
-    name: "Urology",
-    code: "URO",
-    category: "Specialty",
-    description: "Urinary and reproductive system management.",
-    status: "ACTIVE",
-    createdAt: "2025-07-11",
-    hospitalsUsing: 45,
-  },
-  {
-    id: "dept-13",
-    name: "Radiology",
-    code: "RAD",
-    category: "Diagnostics",
-    description: "Imaging diagnostics and scan interpretation.",
-    status: "ACTIVE",
-    createdAt: "2025-07-24",
-    hospitalsUsing: 101,
-  },
-  {
-    id: "dept-14",
-    name: "Pathology",
-    code: "PATH",
-    category: "Diagnostics",
-    description: "Laboratory pathology and microscopic analysis.",
-    status: "ACTIVE",
-    createdAt: "2025-08-04",
-    hospitalsUsing: 98,
-  },
-  {
-    id: "dept-15",
-    name: "Emergency",
-    code: "EMR",
-    category: "Critical Care",
-    description: "Emergency response and urgent care services.",
-    status: "ACTIVE",
-    createdAt: "2025-08-19",
-    hospitalsUsing: 109,
-  },
-  {
-    id: "dept-16",
-    name: "Physiotherapy",
-    code: "PHYSIO",
-    category: "Rehabilitation",
-    description: "Mobility and rehabilitation care programs.",
-    status: "ACTIVE",
-    createdAt: "2025-09-01",
-    hospitalsUsing: 38,
-  },
+  }
 ];

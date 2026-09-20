@@ -1,6 +1,12 @@
 import { CheckCheck, Circle, Clock3 } from "lucide-react";
 import type { NotificationItem } from "@/types/super-admin";
 
+const notificationDateFormatter = new Intl.DateTimeFormat("en-US", {
+  dateStyle: "medium",
+  timeStyle: "short",
+  timeZone: "UTC",
+});
+
 export function NotificationList({ items }: { items: NotificationItem[] }) {
   return (
     <div className="space-y-3">
@@ -21,7 +27,7 @@ export function NotificationList({ items }: { items: NotificationItem[] }) {
                   <p className="mt-1 text-sm text-slate-600">{item.message}</p>
                   <div className="mt-2 flex items-center gap-2 text-[11px] text-slate-500">
                     <span className="rounded-full bg-slate-200 px-2 py-0.5 uppercase tracking-wide">{item.category}</span>
-                    <span className="inline-flex items-center gap-1"><Clock3 className="h-3 w-3" />{new Date(item.timestamp).toLocaleString()}</span>
+                    <span className="inline-flex items-center gap-1"><Clock3 className="h-3 w-3" />{notificationDateFormatter.format(new Date(item.timestamp))}</span>
                   </div>
                 </div>
               </div>

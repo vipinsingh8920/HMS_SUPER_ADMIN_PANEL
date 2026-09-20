@@ -42,40 +42,10 @@ export type SuperAdmin = {
   status: "ACTIVE" | "OFFLINE";
 };
 
-export type Hospital = {
-  id: string;
-  name: string;
-  code: string;
-  type: string;
-  registrationNumber: string;
-  email: string;
-  phone: string;
-  website: string;
-  status: HospitalStatus;
-  registrationDate: string;
-  lastUpdated: string;
-  country: string;
-  state: string;
-  city: string;
-  postalCode: string;
-  address: string;
-  primaryContact: {
-    name: string;
-    designation: string;
-    email: string;
-    phone: string;
-  };
-  platformConfig: {
-    subscription: string;
-    trialPeriod: string;
-    notes: string;
-  };
-  enabledDepartmentIds: string[];
-  logo: string;
-};
+
 
 export type Department = {
-  id: string;
+  id: number;
   name: string;
   code: string;
   category: string;

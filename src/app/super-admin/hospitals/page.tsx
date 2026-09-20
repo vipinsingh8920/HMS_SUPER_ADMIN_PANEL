@@ -1,14 +1,58 @@
+"use client";
 import Link from "next/link";
 import { Building2, CheckCircle2, Clock3, MapPinned, Plus } from "lucide-react";
 import { initialHospitals } from "@/mock/super-admin/hospitals";
 import { HospitalTable } from "@/components/hospitals/HospitalTable";
 import { SuperAdminShell } from "@/components/layout/SuperAdminShell";
+import { useHospitals } from "@/hooks/main/useHospitals";
+import { useState } from "react";
+import { useDebounce } from "@/hooks/common/useDebounce";
+
+type HospitalFilters = {
+  city: string;
+  status: "" | "active" | "inactive";
+};
 
 export default function HospitalsPage() {
-  const activeCount = initialHospitals.filter((hospital) => hospital.status === "ACTIVE").length;
-  const pendingCount = initialHospitals.filter((hospital) => hospital.status === "PENDING").length;
-  const cityCount = new Set(initialHospitals.map((hospital) => hospital.city)).size;
-  const departmentCount = initialHospitals.reduce((total, hospital) => total + hospital.enabledDepartmentIds.length, 0);
+  const [searchInput, setSearchInput] = useState("");
+  const [filters, setFilters] = useState<HospitalFilters>({
+    city: "",
+    status: "",
+  });
+
+  const [page, setPage] = useState(1);
+  const debouncedSearch = useDebounce(searchInput, 400);
+  const {
+    data,
+    isLoading,
+    error,
+    isFetching,
+  } = useHospitals({
+    search: debouncedSearch || undefined,
+    city: filters.city || undefined,
+    status: filters.status || undefined,
+    page,
+    page_size: 20,
+  });
+  const stats = data?.data?.StatsData ?? [];
+  const hospitalsData = data?.data;
+console.log('heyyyyyy',data)
+  const iconMap = {
+    Building2,
+    CheckCircle2,
+    Clock3,
+    MapPinned,
+  };
+
+  const resetFilters = () => {
+    setSearchInput("");
+    setFilters({
+      city: "",
+      status: "",
+    });
+
+    setPage(1);
+  };
 
   return (
     <SuperAdminShell>
@@ -26,20 +70,61 @@ export default function HospitalsPage() {
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {[
-            { label: "Total hospitals", value: initialHospitals.length, detail: "Across the platform", icon: Building2, tone: "bg-[#e6eff5] text-[#3978a5]" },
-            { label: "Active hospitals", value: activeCount, detail: "Access enabled", icon: CheckCircle2, tone: "bg-[#dcefe9] text-[#176c73]" },
-            { label: "Pending review", value: pendingCount, detail: "Awaiting approval", icon: Clock3, tone: "bg-[#fff1d8] text-[#b47629]" },
-            { label: "Cities covered", value: cityCount, detail: `${departmentCount} department assignments`, icon: MapPinned, tone: "bg-[#f7e6e3] text-[#c96968]" },
-          ].map(({ label, value, detail, icon: Icon, tone }) => (
-            <div key={label} className="flex items-center gap-3 rounded-[10px] border border-[#dfeae8] bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
-              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${tone}`}><Icon className="h-4 w-4" /></div>
-              <div className="min-w-0"><p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#8ca0a6]">{label}</p><p className="mt-1 text-2xl font-bold tracking-tight text-[#18343d]">{value}</p><p className="mt-0.5 truncate text-xs text-[#8ca0a6]">{detail}</p></div>
-            </div>
-          ))}
+          {stats.map(({ label, value, detail, icon, tone }) => {
+            const Icon = iconMap[icon as keyof typeof iconMap];
+
+            return (
+              <div
+                key={label}
+                className="flex items-center gap-3 rounded-[10px] border border-[#dfeae8] bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)]"
+              >
+                <div
+                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${tone}`}
+                >
+                  {Icon && <Icon className="h-4 w-4" />}
+                </div>
+
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#8ca0a6]">
+                    {label}
+                  </p>
+
+                  <p className="mt-1 text-2xl font-bold tracking-tight text-[#18343d]">
+                    {value}
+                  </p>
+
+                  <p className="mt-0.5 truncate text-xs text-[#8ca0a6]">
+                    {detail}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
-        <HospitalTable hospitals={initialHospitals} />
+        {hospitalsData && <HospitalTable
+          hospitals={hospitalsData}
+          filters={filters}
+          search={searchInput}
+          onSearchChange={setSearchInput}
+          onCityChange={(value) => {
+            setFilters((previous) => ({
+              ...previous,
+              city: value,
+            }));
+
+            setPage(1);
+          }}
+          onStatusChange={(value) => {
+            setFilters((previous) => ({
+              ...previous,
+              status: value,
+            }));
+
+            setPage(1);
+          }}
+          onReset={resetFilters}
+        />}
       </div>
     </SuperAdminShell>
   );

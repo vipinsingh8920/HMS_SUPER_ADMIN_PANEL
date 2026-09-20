@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useEffect, useState } from "react";
+import { createContext, startTransition, useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -19,16 +19,37 @@ import { getSession } from "@/lib/auth";
 import { superAdmin } from "@/mock/super-admin/admin";
 import { superAdminNotifications } from "@/mock/super-admin/notifications";
 import { useAuth } from "@/hooks/auth/useAuth";
+import type { AuthUser } from "@/lib/auth";
+
+const ShellContext = createContext(false);
 
 export function SuperAdminShell({ children }: { children: React.ReactNode }) {
+  const shellAlreadyMounted = useContext(ShellContext);
+
+  if (shellAlreadyMounted) {
+    return <>{children}</>;
+  }
+
+  return (
+    <ShellContext.Provider value>
+      <SuperAdminShellContent>{children}</SuperAdminShellContent>
+    </ShellContext.Provider>
+  );
+}
+
+function SuperAdminShellContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
+  const [currentUser, setCurrentUser] = useState<AuthUser>({
+    name: superAdmin.name,
+    email: superAdmin.email,
+    role: "SUPER_ADMIN",
+  });
   const unreadCount = superAdminNotifications.filter((item) => !item.read).length;
-  const { logout,isLoggingOut } = useAuth();
+  const { logout, isLoggingOut } = useAuth();
 
   useEffect(() => {
     const currentSession = getSession();
@@ -36,18 +57,12 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
       router.replace(`/login?next=${encodeURIComponent(pathname)}`);
       return;
     }
-    startTransition(() => setAuthChecked(true));
+    startTransition(() => setCurrentUser(currentSession));
   }, [pathname, router]);
-
-  if (!authChecked) {
-    return <div className="flex min-h-screen items-center justify-center bg-[#f3f7f6] text-sm font-semibold text-[#71878d]">Checking workspace access...</div>;
-  }
 
   const handleSignOut = () => {
     logout();
   };
-
-  const currentUser = getSession() ?? superAdmin;
 
   return (
     <div className="super-admin-shell min-h-screen bg-[radial-gradient(circle_at_top,_#f7fbfa,_#edf5f3_38%,_#f1f4f5_100%)] text-[#18343d]">
