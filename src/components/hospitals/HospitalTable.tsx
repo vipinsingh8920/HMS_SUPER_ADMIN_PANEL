@@ -94,18 +94,13 @@ export function HospitalTable({
               <input
                 value={search}
                 onChange={(event) => onSearchChange(event.target.value)}
-                placeholder="Search hospitals, cities, codes"
+                placeholder="Search hospitals, name, codes"
                 className="w-full border-0 bg-transparent text-sm text-[#18343d] outline-none placeholder:text-[#9aabb1] sm:w-56"
               />
             </div>
 
             <div className="relative">
-              {/* <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="appearance-none rounded-[7px] border border-[#dfeae8] bg-white px-3 py-2 pr-9 text-sm text-[#536b75] outline-none shadow-sm">
-                {
-                  statuses.map((status) => {
-                    return <option key={status.id} value={status.label}>{status.label}</option>
-                  })}
-              </select> */}
+
               <select
                 value={filters.status}
                 onChange={(event) =>
@@ -123,13 +118,6 @@ export function HospitalTable({
             </div>
 
             <div className="relative">
-              {/* <select value={cityFilter} onChange={(event) => setCityFilter(event.target.value)} className="appearance-none rounded-[7px] border border-[#dfeae8] bg-white px-3 py-2 pr-9 text-sm text-[#536b75] outline-none shadow-sm">
-                {cities.map((city) => (
-                  <option key={city.id} value={city.label}>
-                    {city.label}
-                  </option>
-                ))}
-              </select> */}
               <select
                 value={filters.city}
                 onChange={(event) => onCityChange(event.target.value)}

@@ -138,9 +138,16 @@ export type CreateHospitalPayload = {
   contact_person_email: string;
 
   department_ids: number[];
-  hms_modules: string[];
+  hms_modules: number[];
 
   admin_name: string;
   admin_email: string;
   admin_phone: string;
+};
+
+export type UpdateHospitalPayload = Omit<
+  CreateHospitalPayload,
+  "password"
+> & {
+  password?: string;
 };

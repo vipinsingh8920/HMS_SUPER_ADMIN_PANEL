@@ -1,12 +1,20 @@
 "use client";
 
-import { createContext, startTransition, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  startTransition,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   ArrowRight,
   Bell,
   ChevronDown,
+  MapPin,
   Menu,
   Search,
   ShieldCheck,
@@ -14,11 +22,14 @@ import {
   UserCircle2,
   X,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { superAdminNavItems } from "@/lib/navigation";
 import { getSession } from "@/lib/auth";
 import { superAdmin } from "@/mock/super-admin/admin";
 import { superAdminNotifications } from "@/mock/super-admin/notifications";
 import { useAuth } from "@/hooks/auth/useAuth";
+import { useDebounce } from "@/hooks/common/useDebounce";
+import { hospitalService } from "@/api/services/hospital.service";
 import type { AuthUser } from "@/lib/auth";
 
 const ShellContext = createContext(false);
@@ -43,6 +54,9 @@ function SuperAdminShellContent({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const searchRef = useRef<HTMLDivElement | null>(null);
   const [currentUser, setCurrentUser] = useState<AuthUser>({
     name: superAdmin.name,
     email: superAdmin.email,
@@ -50,6 +64,22 @@ function SuperAdminShellContent({ children }: { children: React.ReactNode }) {
   });
   const unreadCount = superAdminNotifications.filter((item) => !item.read).length;
   const { logout, isLoggingOut } = useAuth();
+  const debouncedSearchTerm = useDebounce(searchTerm.trim(), 250);
+
+  const { data: searchResultsData, isLoading: searchLoading } = useQuery({
+    queryKey: ["super-admin-global-search", debouncedSearchTerm],
+    queryFn: () =>
+      hospitalService.getHospitals({
+        search: debouncedSearchTerm,
+        page: 1,
+        page_size: 6,
+      }),
+    enabled: debouncedSearchTerm.length > 0,
+    staleTime: 30_000,
+    retry: 1,
+  });
+
+  const searchResults = searchResultsData?.data?.hospitals ?? [];
 
   useEffect(() => {
     const currentSession = getSession();
@@ -60,20 +90,42 @@ function SuperAdminShellContent({ children }: { children: React.ReactNode }) {
     startTransition(() => setCurrentUser(currentSession));
   }, [pathname, router]);
 
+  useEffect(() => {
+    const handlePointerDown = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setSearchOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    return () => document.removeEventListener("mousedown", handlePointerDown);
+  }, []);
+
+  useEffect(() => {
+    setSearchOpen(false);
+    setSearchTerm("");
+  }, [pathname]);
+
   const handleSignOut = () => {
     logout();
   };
 
+  const handleHospitalSelect = (hospitalId: number) => {
+    setSearchTerm("");
+    setSearchOpen(false);
+    router.push(`/super-admin/hospitals/${hospitalId}`);
+  };
+
   return (
-    <div className="super-admin-shell min-h-screen bg-[radial-gradient(circle_at_top,_#f7fbfa,_#edf5f3_38%,_#f1f4f5_100%)] text-[#18343d]">
-      <div className="flex min-h-screen min-w-0">
+    <div className="super-admin-shell h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_#f7fbfa,_#edf5f3_38%,_#f1f4f5_100%)] text-[#18343d]">
+      <div className="flex h-screen min-w-0 overflow-hidden">
         <aside
           className={[
-            "hidden border-r border-[#315463] bg-[#123f47] text-slate-100 shadow-[0_18px_40px_rgba(15,23,42,0.12)] transition-all duration-300 lg:flex lg:flex-col",
+            "hidden h-screen overflow-hidden border-r border-[#315463] bg-[#123f47] text-slate-100 shadow-[0_18px_40px_rgba(15,23,42,0.12)] transition-all duration-300 lg:flex lg:flex-col",
             collapsed ? "w-24" : "w-72",
           ].join(" ")}
         >
-          <div className="flex items-center justify-between border-b border-white/10 px-4 py-4">
+          <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 py-4">
             <div className="flex items-center gap-3 overflow-hidden">
               <div className="flex h-10 w-10 items-center justify-center rounded-[9px] bg-[#25a7a0] text-sm font-black text-white shadow-sm">
                 V
@@ -95,7 +147,7 @@ function SuperAdminShellContent({ children }: { children: React.ReactNode }) {
             </button>
           </div>
 
-          <nav className="flex-1 space-y-1 px-3 py-4">
+          <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto px-3 py-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {superAdminNavItems.map((item) => {
               const active = pathname === item.href || (item.href !== "/super-admin" && pathname.startsWith(item.href + "/"));
               const Icon = item.icon;
@@ -120,7 +172,7 @@ function SuperAdminShellContent({ children }: { children: React.ReactNode }) {
             })}
           </nav>
 
-          <div className="border-t border-white/10 p-3">
+          <div className="mt-auto shrink-0 border-t border-white/10 p-3">
             <div className="flex items-center gap-3 rounded-none border-t border-[#315463] px-2 py-4">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#c9eee4] text-xs font-black text-[#196366]">
                 {currentUser.name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase()}
@@ -142,11 +194,11 @@ function SuperAdminShellContent({ children }: { children: React.ReactNode }) {
 
         <aside
           className={[
-            "fixed inset-y-0 left-0 z-50 w-72 border-r border-[#315463] bg-[#123f47] text-slate-100 shadow-2xl transition-transform duration-300 lg:hidden",
+            "fixed inset-y-0 left-0 z-50 flex h-screen w-72 flex-col overflow-hidden border-r border-[#315463] bg-[#123f47] text-slate-100 shadow-2xl transition-transform duration-300 lg:hidden",
             mobileOpen ? "translate-x-0" : "-translate-x-full",
           ].join(" ")}
         >
-          <div className="flex items-center justify-between border-b border-white/10 px-4 py-4">
+          <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 py-4">
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-[9px] bg-[#25a7a0] text-sm font-black text-white">A</div>
               <div>
@@ -158,7 +210,7 @@ function SuperAdminShellContent({ children }: { children: React.ReactNode }) {
               <X className="h-4 w-4" />
             </button>
           </div>
-          <nav className="space-y-1 p-3">
+          <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto p-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {superAdminNavItems.map((item) => {
               const active = pathname === item.href || (item.href !== "/super-admin" && pathname.startsWith(item.href + "/"));
               const Icon = item.icon;
@@ -180,8 +232,8 @@ function SuperAdminShellContent({ children }: { children: React.ReactNode }) {
           </nav>
         </aside>
 
-        <div className="flex min-h-screen min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-30 border-b border-[#dfeae8] bg-white/90 backdrop-blur-xl">
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+          <header className="sticky top-0 z-30 shrink-0 border-b border-[#dfeae8] bg-white/90 backdrop-blur-xl">
             <div className="flex h-16 items-center justify-between gap-4 px-4 sm:px-6">
               <div className="flex items-center gap-2">
                 <button
@@ -199,13 +251,76 @@ function SuperAdminShellContent({ children }: { children: React.ReactNode }) {
               </div>
 
               <div className="hidden flex-1 items-center justify-center md:flex">
-                <div className="flex w-full max-w-xl items-center gap-2 rounded-[7px] border border-[#e8eff1] bg-[#f5f8f9] px-3 py-2 text-sm text-[#9aabb1] shadow-none">
-                  <Search className="h-4 w-4 text-[#9aabb1]" />
-                  <input
-                    aria-label="Global search"
-                    placeholder="Search hospitals, departments, notifications"
-                    className="w-full border-0 bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
-                  />
+                <div ref={searchRef} className="relative w-full max-w-xl">
+                  <div className="flex items-center gap-2 rounded-[7px] border border-[#e8eff1] bg-[#f5f8f9] px-3 py-2 text-sm text-[#9aabb1] shadow-none transition focus-within:border-[#176c73] focus-within:bg-white">
+                    <Search className="h-4 w-4 text-[#9aabb1]" />
+                    <input
+                      aria-label="Global search"
+                      value={searchTerm}
+                      onFocus={() => setSearchOpen(true)}
+                      onChange={(event) => {
+                        setSearchTerm(event.target.value);
+                        setSearchOpen(true);
+                      }}
+                      placeholder="Search hospitals, departments, notifications"
+                      className="w-full border-0 bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+                    />
+                  </div>
+
+                  {searchOpen && (
+                    <div className="absolute left-0 right-0 top-[calc(100%+10px)] z-50 overflow-hidden rounded-[12px] border border-[#dfeae8] bg-white shadow-[0_18px_40px_rgba(15,23,42,0.12)]">
+                      <div className="border-b border-[#eef3f2] px-3 py-2 text-[11px] font-bold uppercase tracking-[0.08em] text-[#71878d]">
+                        Hospital search
+                      </div>
+
+                      {searchLoading && (
+                        <div className="px-4 py-3 text-sm text-[#71878d]">Searching hospitals...</div>
+                      )}
+
+                      {!searchLoading && debouncedSearchTerm.length > 0 && searchResults.length === 0 && (
+                        <div className="px-4 py-4 text-sm text-[#71878d]">No hospitals found for “{debouncedSearchTerm}”.</div>
+                      )}
+
+                      {!searchLoading && searchResults.length > 0 && (
+                        <div className="max-h-80 overflow-y-auto p-2">
+                          {searchResults.map((hospital) => (
+                            <button
+                              key={hospital.id}
+                              type="button"
+                              onClick={() => handleHospitalSelect(hospital.id)}
+                              className="flex w-full items-start gap-3 rounded-[10px] border border-transparent px-3 py-2.5 text-left transition hover:border-[#dfeae8] hover:bg-[#f4faf9]"
+                            >
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#dfeef0] text-xs font-black text-[#176c73]">
+                                {hospital.logo || hospital.name.slice(0, 2).toUpperCase()}
+                              </div>
+
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center justify-between gap-3">
+                                  <p className="truncate text-sm font-semibold text-[#18343d]">{hospital.name}</p>
+                                  <span className="rounded-full bg-[#e5f5f0] px-1.5 py-0.5 text-[10px] font-bold text-[#23876d]">
+                                    {hospital.is_active ? "Active" : "Inactive"}
+                                  </span>
+                                </div>
+
+                                <div className="mt-1 flex items-center gap-2 text-[11px] text-[#71878d]">
+                                  <span className="font-mono">{hospital.code}</span>
+                                  <span>•</span>
+                                  <span className="inline-flex items-center gap-1">
+                                    <MapPin className="h-3 w-3" />
+                                    {hospital.city || "Location not set"}
+                                  </span>
+                                </div>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {debouncedSearchTerm.length === 0 && (
+                        <div className="px-4 py-3 text-sm text-[#71878d]">Type a hospital name or code to search.</div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -259,7 +374,7 @@ function SuperAdminShellContent({ children }: { children: React.ReactNode }) {
             </div>
           </header>
 
-          <main className="min-w-0 flex-1 overflow-x-hidden p-3 sm:p-6 lg:p-8">{children}</main>
+          <main className="min-w-0 flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-6 lg:p-8">{children}</main>
         </div>
       </div>
     </div>

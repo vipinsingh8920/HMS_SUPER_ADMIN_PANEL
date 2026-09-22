@@ -10,19 +10,15 @@ export function useDashboard(
     months?: number;
     limit?: number;
   } = {
-    months: 12,
-    limit: 10,
-  },
+      months: 12,
+      limit: 10,
+    },
 ) {
   const dashboardQuery = useQuery({
     queryKey: queryKeys.dashboard.summary(params),
-
     queryFn: () => dashboardService.getSummary(params),
-
     staleTime: 30 * 1000,
-
     retry: 1,
-
     refetchOnWindowFocus: true,
   });
 

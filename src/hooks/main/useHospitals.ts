@@ -13,6 +13,7 @@ import { hospitalService } from "@/api/services/hospital.service";
 import type {
   CreateHospitalPayload,
   GetHospitalsParams,
+  UpdateHospitalPayload,
 } from "@/types/hospital";
 
 export const useHospitals = (
@@ -32,6 +33,26 @@ export const useHospitals = (
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: queryKeys.hospitals.all,
+      });
+    },
+  });
+
+  const updateHospitalMutation = useMutation({
+    mutationFn: ({
+      hospitalId,
+      payload,
+    }: {
+      hospitalId: number;
+      payload: UpdateHospitalPayload;
+    }) => hospitalService.updateHospital(hospitalId, payload),
+
+    onSuccess: async (_, { hospitalId }) => {
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.hospitals.all,
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.hospitals.detail(hospitalId),
       });
     },
   });
@@ -105,5 +126,19 @@ export const useHospitals = (
     createHospitalData: createHospitalMutation.data,
     createHospitalSuccess: createHospitalMutation.isSuccess,
     resetCreateHospital: createHospitalMutation.reset,
+
+    updateHospital: async (
+      hospitalId: number,
+      payload: UpdateHospitalPayload,
+    ) =>
+      updateHospitalMutation.mutateAsync({
+        hospitalId,
+        payload,
+      }),
+    updateHospitalLoading: updateHospitalMutation.isPending,
+    updateHospitalError: updateHospitalMutation.error,
+    updateHospitalData: updateHospitalMutation.data,
+    updateHospitalSuccess: updateHospitalMutation.isSuccess,
+    resetUpdateHospital: updateHospitalMutation.reset,
   };
 };

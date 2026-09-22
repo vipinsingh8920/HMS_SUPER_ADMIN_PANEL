@@ -31,8 +31,7 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const res = await login({ email, password });
-      console.log(res);
+      await login({ email, password });
       router.replace(getAuthRedirectPath());
     } catch (err) {
       setError(

@@ -12,9 +12,14 @@ export const ENDPOINTS = {
         LIST: "/api/v1/super-admins/hospitals",
         DETAIL: (hospitalId: number) =>
             `/api/v1/super-admins/hospitals/${hospitalId}`,
-        CREATE:"/api/v1/super-admins/hospitals"
+        CREATE: "/api/v1/super-admins/hospitals",
+        UPDATE: (hospitalId: number) =>
+            `/api/v1/super-admins/hospitals/${hospitalId}`
     },
-    DEPARTMENTS:{
-        LIST:"/api/v1/super-admins/departments"
+    DEPARTMENTS: {
+        LIST: "/api/v1/super-admins/departments"
+    },
+    MODULES: {
+        LIST: "/api/v1/super-admins/modules"
     }
 }

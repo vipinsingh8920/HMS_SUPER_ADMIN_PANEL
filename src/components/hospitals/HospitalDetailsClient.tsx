@@ -30,8 +30,6 @@ export default function HospitalDetailsClient({
     error,
   } = useHospitals({}, hospitalId);
 
-  console.log('hhhhh', hospitalProfile)
-
   if (isLoading) {
     return (
       <div>

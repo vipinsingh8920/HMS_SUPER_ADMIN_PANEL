@@ -53,4 +53,8 @@ export const queryKeys = {
     all: ["departments"] as const,
     list: () => ["departments", "list"] as const,
   },
+  modules: {
+    all: ["modules"] as const,
+    list: () => ["modules", "list"] as const
+  }
 };

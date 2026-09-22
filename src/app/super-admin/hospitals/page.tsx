@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { Building2, CheckCircle2, Clock3, MapPinned, Plus } from "lucide-react";
-import { initialHospitals } from "@/mock/super-admin/hospitals";
 import { HospitalTable } from "@/components/hospitals/HospitalTable";
 import { SuperAdminShell } from "@/components/layout/SuperAdminShell";
 import { useHospitals } from "@/hooks/main/useHospitals";
@@ -32,11 +31,10 @@ export default function HospitalsPage() {
     city: filters.city || undefined,
     status: filters.status || undefined,
     page,
-    page_size: 20,
-  });
+    page_size: 20,  
+  }); 
   const stats = data?.data?.StatsData ?? [];
   const hospitalsData = data?.data;
-console.log('heyyyyyy',data)
   const iconMap = {
     Building2,
     CheckCircle2,

@@ -29,7 +29,6 @@ import { ChartCard } from "@/components/dashboard/ChartCard";
 import { RecentActivity } from "@/components/dashboard/RecentActivity";
 import { HospitalStatusBadge } from "@/components/hospitals/HospitalStatusBadge";
 import { SuperAdminShell } from "@/components/layout/SuperAdminShell";
-
 import { useDashboard } from "@/hooks/main/useDashboard";
 import { AppzioraLoader } from "@/components/layout/AppzioraLoader";
 
@@ -50,8 +49,6 @@ export default function SuperAdminDashboardPage() {
     error,
     refetch,
   } = useDashboard();
-
-  console.log('heyyyy',data)
 
   if (isLoading) {
     return <AppzioraLoader fullScreen={false} />;

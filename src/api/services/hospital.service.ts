@@ -1,13 +1,16 @@
 // hospital.service.ts
 
 import { apiClient } from "@/api/client"
-import { CreateHospitalPayload, GetHospitalsParams, HospitalListResponse, HospitalProfileResponse } from "@/types/hospital";
+import {
+  CreateHospitalPayload,
+  GetHospitalsParams,
+  HospitalListResponse,
+  HospitalProfileResponse,
+  UpdateHospitalPayload,
+} from "@/types/hospital";
 import { ENDPOINTS } from "../endpoints";
 
-
-
 export const hospitalService = {
-
   createHospital: async (
     payload: CreateHospitalPayload,
   ): Promise<HospitalProfileResponse> => {
@@ -15,6 +18,19 @@ export const hospitalService = {
       ENDPOINTS.HOSPITALS.CREATE,
       {
         method: "POST",
+        data: payload,
+      },
+    );
+  },
+
+  updateHospital: async (
+    hospitalId: number,
+    payload: UpdateHospitalPayload,
+  ): Promise<HospitalProfileResponse> => {
+    return apiClient<HospitalProfileResponse>(
+      ENDPOINTS.HOSPITALS.UPDATE(hospitalId),
+      {
+        method: "PUT",
         data: payload,
       },
     );
